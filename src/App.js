@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTable } from "react-table";
-
+import BTable from "react-bootstrap/Table";
 import makeData from "./makeData";
 import { getPeople } from "./fakePeopleAPI";
 
@@ -20,7 +20,7 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-      padding: 0.5rem;
+      padding: 0.75rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
       :last-child {
@@ -45,7 +45,7 @@ function Table({ columns, data }) {
 
   // Render the UI for your table
   return (
-    <table {...getTableProps()}>
+    <BTable striped bordered hover {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -67,7 +67,7 @@ function Table({ columns, data }) {
           );
         })}
       </tbody>
-    </table>
+    </BTable>
   );
 }
 
