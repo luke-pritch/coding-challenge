@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTable } from "react-table";
 
 import makeData from "./makeData";
+import { getPeople } from "./fakePeopleAPI";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -74,40 +75,48 @@ function Table({ columns, data }) {
   );
 }
 
+function useFetch() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchData() {
+    const response = await getPeople();
+    setData(response.data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  return [data, loading];
+}
+
 function App() {
+  const [data, loading] = useFetch();
   const columns = React.useMemo(
     () => [
       {
-        Header: "Name",
+        Header: "People",
         columns: [
           {
-            Header: "First Name",
-            accessor: "firstName",
+            Header: "Name",
+            accessor: "name",
           },
-          {
-            Header: "Last Name",
-            accessor: "lastName",
-          },
-        ],
-      },
-      {
-        Header: "Info",
-        columns: [
           {
             Header: "Age",
             accessor: "age",
           },
           {
-            Header: "Visits",
-            accessor: "visits",
+            Header: "Favourite Colour",
+            accessor: "favourite_color",
           },
           {
-            Header: "Status",
-            accessor: "status",
+            Header: "Favourite Food",
+            accessor: "favourite_food",
           },
           {
-            Header: "Profile Progress",
-            accessor: "progress",
+            Header: "Friends",
+            accessor: "friends",
           },
         ],
       },
@@ -115,11 +124,14 @@ function App() {
     []
   );
 
-  const data = React.useMemo(() => makeData(20), []);
+  // const data = React.useMemo(() => makeData(20), []);
+
+  const newData = React.useMemo(() => data);
+  console.log(newData);
 
   return (
     <Styles>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={newData} />
     </Styles>
   );
 }
