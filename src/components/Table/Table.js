@@ -1,122 +1,77 @@
+import React from "react";
 import { useTable } from "react-table";
-import { people } from "../../fakePeopleAPI";
+import BTable from "react-bootstrap/Table";
+import styled from "styled-components";
 
-const data = React.useMemo(
-  () => [
-    {
-      col1: "Hello",
-      col2: "World",
-    },
-    {
-      col1: "Stuff",
-      col2: "Rocks",
-    },
-    {
-      col1: "Whatever",
-      col2: "I want!",
-    },
-  ],
-  []
-);
+const Styles = styled.div`
+  padding: 1rem;
+  table {
+    border-spacing: 0;
+    border: 1px solid black;
+    tr {
+      :last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+    th,
+    td {
+      margin: 0;
+      padding: 0.75rem;
+      text-align: center;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+      :last-child {
+        border-right: 0;
+      }
+    }
+  }
+`;
 
-const Table = () => {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Column 1",
-        acessor: "col1",
-      },
-      {
-        Header: "Column 2",
-        acessor: "col2",
-      },
-    ],
-    []
-  );
-
-  const tableInstance = useTable({ columns, data });
-
+function Table({ columns, data }) {
+  // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
-
     getTableBodyProps,
-
     headerGroups,
-
     rows,
-
     prepareRow,
-  } = tableInstance;
+  } = useTable({
+    columns,
+    data,
+  });
 
+  // Render the UI for your table
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {
-          // Loop over the header rows
-
-          headerGroups.map((headerGroup) => (
-            // Apply the header row props
-
+    <Styles>
+      <BTable striped bordered hover responsive {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {
-                // Loop over the headers in each row
-
-                headerGroup.headers.map((column) => (
-                  // Apply the header cell props
-
-                  <th {...column.getHeaderProps()}>
-                    {
-                      // Render the header
-
-                      column.render("Header")
-                    }
-                  </th>
-                ))
-              }
+              {headerGroup.headers.map((column) => (
+                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              ))}
             </tr>
-          ))
-        }
-      </thead>
-
-      {/* Apply the table body props */}
-
-      <tbody {...getTableBodyProps()}>
-        {
-          // Loop over the table rows
-
-          rows.map((row) => {
-            // Prepare the row for display
-
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
             prepareRow(row);
-
             return (
-              // Apply the row props
-
               <tr {...row.getRowProps()}>
-                {
-                  // Loop over the rows cells
-
-                  row.cells.map((cell) => {
-                    // Apply the cell props
-
-                    return (
-                      <td {...cell.getCellProps()}>
-                        {
-                          // Render the cell contents
-
-                          cell.render("Cell")
-                        }
-                      </td>
-                    );
-                  })
-                }
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  );
+                })}
               </tr>
             );
-          })
-        }
-      </tbody>
-    </table>
+          })}
+        </tbody>
+      </BTable>
+    </Styles>
   );
-};
+}
 
 export default Table;
